@@ -1,0 +1,135 @@
+﻿@{
+    Layout = null;
+}
+@inherits System.Web.Mvc.WebViewPage
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+
+        <pre>1 - Run this from the Package Manager Console: Install-Package Microsoft.AspNet.Mvc
+
+    Output was as follows:
+
+            Attempting to gather dependency information for package 'Microsoft.AspNet.Mvc.5.2.3'
+            Attempting to resolve dependencies for package 'Microsoft.AspNet.Mvc.5.2.3' with DependencyBehavior 'Lowest'
+            Resolving actions to install package 'Microsoft.AspNet.Mvc.5.2.3
+            It then retrieved, added and installed the following packages
+                Microsoft.AspNet.Mvc 5.2.3
+                Microsoft.AspNet.Razor 3.2.3
+                Microsoft.AspNet.WebPages 3.2.3
+                Microsoft.Web.Infrastructure 1.0.0
+
+            The install added the following references:
+
+                System.Web.Helpers, Version=3.0.0.0
+                System.Web.Mvc, Version=5.2.3.0
+                System.Web.Razor, Version=3.0.0.0
+                System.Web.WebPages, Version=3.0.0.0
+                System.Web.WebPages.Deployment, Version=3.0.0.0
+                System.Web.WebPages.Razor, Version=3.0.0.0
+    </pre>
+
+        <pre>2 - Created folder: App_Start and added a blank class file under it for routing: RouteConfig.cs
+            
+    Needed to add 2 usings at the top: 
+
+            using System.Web.Mvc;
+            using System.Web.Routing;
+
+    Needed to remove the appended folder name from the namespace (".App_Start") so that other classes can see it. 
+    (such as the class in Global.asax that calls the method in this class)
+
+    Added a method for assigning the value of the "MapRoute" property of the "RouteCollection"
+
+
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );
+        }
+
+    </pre>
+
+        <pre>3 - Added a global.asx file to launch the method at startup that was added in the RouteConfig.cs file above. 
+        
+                1 - Needed to add 1 using at the top: 
+        
+                    using System.Web.Routing;
+
+                2 - Added the call to the RouteConfig method call in the Application_Start() method. All code inside the namespace should look like this (Deleted all of the other events in the file).
+
+                    - code:     public class MvcApplication : System.Web.HttpApplication
+                                {
+                                    protected void Application_Start(object sender, EventArgs e)
+                                    {
+                                        RouteConfig.RegisterRoutes(RouteTable.Routes);
+                                    }
+                                }
+
+
+                    - Passed the RouteTable.Routes object (contains all the routes in the "RouteCollection" collection referenced above) to the method 
+
+                3 - Changed the class type from Global to MvcApplication and kept the inheritance the same from System.Web.HttpApplication.
+    
+
+    This is all that was done to the file at 1st, but it crashed because it could not find the Global type that was originally specified. 
+    This was because the markup for this file had to be edited to inherit from the new class type not Global. 
+
+                4 - So edited the markup (right-clicked on file name, selected view markup) to inherit from MvcApplication vs Global
+    </pre>
+
+        <pre>4 - Added the razor pages to be managed by the router
+
+    Created the following folders:
+        - Controllers
+        - Views\Home        
+        - Views\Shared
+
+    Since the startup referenced above defaults to a call to a Controller called Home with an Action called Index, added the following files:
+
+        - Controllers\HomeController.cs (added as a blank class file) 
+        - Views\Home\Index.cshtml (added as a new MVC 5 View Page (Razor) from the C#/Web new item wizard)        
+        - Views\Shared\_LayoutPage1.cshtml (added as a new MVC 5 Layout Page (Razor) from the C#/Web new item wizard) to add the master page to the project
+
+    Added the following to the HomeController.cs file reference above
+
+        ? Remove the parent folder name that was appended to the namespace ?
+        
+        Needed to add 1 using at the top:
+                using System.Web.Mvc;
+
+        - Added Controller class inheritance to the class name HomeController 
+        - Added the method Index() (matching the same name as what was passed to the route collection above)
+        - Set the type of the Index() method as "ActionResult"
+        - View() method did not need parameters since it will automatically look for the razor file with the same name as its containing method;
+        but passed in the name of the file anyway, so that the master page (_LayoutPage1) can load as its container.
+
+        public class HomeController : Controller
+        {
+            public ActionResult Index()
+            {
+                ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+
+                return View("Index", "_LayoutPage1");
+            }
+        }
+
+    Added the following at the top to the Index and _LayoutPage1 razor files
+
+        -  (at sign)inherits System.Web.Mvc.WebViewPage (this was added at the top after the other directive) 
+    
+    </pre>
+</body>
+</html>
