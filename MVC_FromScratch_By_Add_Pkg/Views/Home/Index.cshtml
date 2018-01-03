@@ -11,8 +11,6 @@
     <title></title>
 </head>
 <body>
-    <div>
-
         <pre>1 - Run this from the Package Manager Console: Install-Package Microsoft.AspNet.Mvc
 
     Output was as follows:
@@ -81,54 +79,55 @@
 
                     - Passed the RouteTable.Routes object (contains all the routes in the "RouteCollection" collection referenced above) to the method 
 
-                3 - Changed the class type from Global to MvcApplication and kept the inheritance the same from System.Web.HttpApplication.
+                    - Changed the class type from Global to MvcApplication and kept the inheritance the same from System.Web.HttpApplication.
     
 
     This is all that was done to the file at 1st, but it crashed because it could not find the Global type that was originally specified. 
     This was because the markup for this file had to be edited to inherit from the new class type not Global. 
 
-                4 - So edited the markup (right-clicked on file name, selected view markup) to inherit from MvcApplication vs Global
+                3 - So edited the markup (right-clicked on file name, selected view markup) to inherit from MvcApplication vs Global
     </pre>
 
         <pre>4 - Added the razor pages to be managed by the router
 
-    Created the following folders:
-        - Controllers
-        - Views\Home        
-        - Views\Shared
+                1 - Created the following folders:
+                    - Controllers
+                    - Views\Home        
+                    - Views\Shared
 
-    Since the startup referenced above defaults to a call to a Controller called Home with an Action called Index, added the following files:
+                2 - Since the startup referenced above defaults to a call to a Controller called Home with an Action called Index, added the following files:
 
-        - Controllers\HomeController.cs (added as a blank class file) 
-        - Views\Home\Index.cshtml (added as a new MVC 5 View Page (Razor) from the C#/Web new item wizard)        
-        - Views\Shared\_LayoutPage1.cshtml (added as a new MVC 5 Layout Page (Razor) from the C#/Web new item wizard) to add the master page to the project
+                    - Controllers\HomeController.cs (added as a blank class file) 
+                    - Views\Home\Index.cshtml (added as a new MVC 5 View Page (Razor) from the C#/Web new item wizard)        
+                    - Views\Shared\_LayoutPage1.cshtml (added as a new MVC 5 Layout Page (Razor) from the C#/Web new item wizard) to add the master page to the project
 
-    Added the following to the HomeController.cs file reference above
+                Added the following to the HomeController.cs file reference above
 
-        ? Remove the parent folder name that was appended to the namespace ?
+                    ? Remove the parent folder name that was appended to the namespace ?
         
-        Needed to add 1 using at the top:
-                using System.Web.Mvc;
+                    Needed to add 1 using at the top:
+                            using System.Web.Mvc;
 
-        - Added Controller class inheritance to the class name HomeController 
-        - Added the method Index() (matching the same name as what was passed to the route collection above)
-        - Set the type of the Index() method as "ActionResult"
-        - View() method did not need parameters since it will automatically look for the razor file with the same name as its containing method;
-        but passed in the name of the file anyway, so that the master page (_LayoutPage1) can load as its container.
+                    - Added the Controller class to be inherited by the HomeController class
+                    - Added the method called Index() (matching the same name as what was passed to the route collection above)
+                    - Set the type of the Index() method as "ActionResult"
+                    - The return View() method did not need parameters since it will automatically look for the razor file with the same name as its containing method;
+                    but passed in the name of the file anyway, so that the master page (_LayoutPage1) can load as its container.
+                    - The following is what it should look like.
 
-        public class HomeController : Controller
-        {
-            public ActionResult Index()
-            {
-                ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+                    public class HomeController : Controller
+                    {
+                        public ActionResult Index()
+                        {
+                            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
 
-                return View("Index", "_LayoutPage1");
-            }
-        }
+                            return View("Index", "_LayoutPage1");
+                        }
+                    }
 
-    Added the following at the top to the Index and _LayoutPage1 razor files
+                Added the following at the top to the Index and _LayoutPage1 razor files
 
-        -  (at sign)inherits System.Web.Mvc.WebViewPage (this was added at the top after the other directive) 
+                    -  (at sign)inherits System.Web.Mvc.WebViewPage (this was added at the top after the other directive) 
     
     </pre>
 </body>
